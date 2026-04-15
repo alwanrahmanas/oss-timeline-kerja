@@ -46,6 +46,7 @@ timeline-dashboard/
 ├── data_embed.js     ← Example data (auto-generated)
 ├── convert_to_js.py  ← Run this to generate your own data
 ├── favicon.png       ← Replace with your own icon
+├── example/          ← Contains a working example Excel file
 └── timeline-data/    ← Put your .xlsx files here (gitignored)
 ```
 
@@ -108,6 +109,8 @@ timeline-data/
 ├── timeline_team_b_2026.xlsx
 └── timeline_team_c_2026.xlsx
 ```
+
+> **Testing the example:** we provided a working Excel template! Simply create the `timeline-data/` folder, copy `example/timeline_team_a_2026.xlsx` into it, and you're good to go.
 
 > The `timeline-data/` folder is gitignored by default to protect sensitive organizational data.
 
