@@ -2,9 +2,8 @@
 
 A **static, interactive web dashboard** for visualizing annual work activity timelines across multiple teams. Built with vanilla HTML/CSS/JavaScript — no framework, no build step, no server required.
 
-> **Live example →** [fix-timeline-kerja.vercel.app](https://fix-timeline-kerja.vercel.app/)
 
-![Dashboard Preview](https://raw.githubusercontent.com/alwanrahmanas/fix-timeline-kerja/main/preview.png)
+![Dashboard Preview](https://raw.githubusercontent.com/alwanrahmanas/oss-timeline-kerja/preview.png)
 
 ---
 
