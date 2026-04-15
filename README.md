@@ -3,7 +3,7 @@
 A **static, interactive web dashboard** for visualizing annual work activity timelines across multiple teams. Built with vanilla HTML/CSS/JavaScript — no framework, no build step, no server required.
 
 
-![Dashboard Preview](https://raw.githubusercontent.com/alwanrahmanas/oss-timeline-kerja/preview.png)
+![Dashboard Preview](preview.png)
 
 ---
 
