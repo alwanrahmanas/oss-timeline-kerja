@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id" data-theme="light">
 <head>
   <meta charset="UTF-8" />
@@ -162,8 +162,8 @@ input,select{font-family:inherit}
 /* ═══════════════ GANTT CHART ═══════════════ */
 #gantt-wrap{overflow-x:auto;overflow-y:auto;max-height:60vh;position:relative}
 #gantt-container{min-width:900px}
-.g-header{display:flex;position:sticky;top:0;z-index:10;background:var(--surface);border-bottom:1px solid var(--border)}
-.g-label-col{flex:0 0 260px;min-width:260px;padding:0 14px;font-size:.7rem;font-weight:600;color:var(--text-muted);border-right:1px solid var(--border);display:flex;align-items:center;gap:6px;background:var(--surface)}
+.g-header{display:flex;position:sticky;top:0;z-index:20;background:var(--surface);border-bottom:1px solid var(--border)}
+.g-label-col{flex:0 0 260px;min-width:260px;padding:0 14px;font-size:.7rem;font-weight:600;color:var(--text-muted);border-right:1px solid var(--border);display:flex;align-items:center;gap:6px;background:var(--surface);position:sticky;left:0;z-index:25}
 .g-weeks-col{flex:1;display:flex}
 .g-month-cell{display:flex;flex-direction:column;border-right:1px solid var(--border)}
 .g-month-name{padding:5px 6px;text-align:center;border-bottom:1px solid var(--border);font-size:.68rem;font-weight:700;color:var(--text-muted);cursor:pointer;transition:color var(--anim);white-space:nowrap}
@@ -181,7 +181,7 @@ input,select{font-family:inherit}
 .g-row:nth-child(even):hover{background:var(--surface-2)}
 .g-row-label{
   flex:0 0 260px;min-width:260px;padding:5px 12px;display:flex;flex-direction:column;justify-content:center;
-  border-right:1px solid var(--border);background:var(--surface);position:sticky;left:0;z-index:5;
+  border-right:1px solid var(--border);background:var(--surface);position:sticky;left:0;z-index:15;
 }
 .act-name{font-size:.78rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:230px}
 .act-prog{font-size:.66rem;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:230px}
@@ -254,7 +254,8 @@ input,select{font-family:inherit}
   .cal-grid{grid-template-columns:1fr 1fr}
   #detail-panel{width:100%}
   .search-wrap{width:130px}
-  .view-toggle{display:none}
+  .view-btn span{display:none}
+  .view-toggle{gap:0}
 }
   </style>
 </head>
