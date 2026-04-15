@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+venv/
+.venv/
+.env
+
+# Data — keep out of OSS repo
+timeline-data/
+*.xlsx
+*.xls
+
+# Generated — regenerate with convert_to_js.py
+# data_embed.js is intentionally INCLUDED (with example data)
+
+# OS / Editor
+.DS_Store
+Thumbs.db
+*.swp
+.vscode/
+.idea/

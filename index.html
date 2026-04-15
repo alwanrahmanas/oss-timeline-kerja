@@ -1,0 +1,973 @@
+﻿<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard Timeline Kegiatan Timeline Dashboard 2026</title>
+  <meta name="description" content="Visualisasi interaktif jadwal tahunan seluruh tim kerja Timeline Dashboard 2026." />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,600,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="shortcut icon" href="favicon.png">
+
+
+  <style>
+/* ═══════════════ DESIGN TOKENS ═══════════════ */
+:root {
+  --bg:#f7f6f2; --surface:#ffffff; --surface-2:#f0eeea; --border:#e0ded8;
+  --text:#1a1814; --text-muted:#6b6860; --text-xs:#9b978f;
+  --primary:#01696f;
+  --sidebar-w:248px; --topbar-h:56px; --radius:12px; --radius-sm:8px;
+  --font-display:'Satoshi',system-ui,sans-serif;
+  --font-body:'Satoshi',system-ui,sans-serif;
+  --font-mono:'JetBrains Mono',ui-monospace,monospace;
+  --shadow-sm:0 1px 2px rgba(0,0,0,.05),0 1px 3px rgba(0,0,0,.06);
+  --shadow-md:0 4px 12px rgba(0,0,0,.08);
+  --shadow-lg:0 12px 40px rgba(0,0,0,.12);
+  --anim:200ms ease;
+}
+[data-theme="dark"] {
+  --bg:#111113; --surface:#1a1a1e; --surface-2:#232328; --border:#2e2e35;
+  --text:#ebebeb; --text-muted:#8a8a90; --text-xs:#55555a;
+  --shadow-sm:0 1px 3px rgba(0,0,0,.4); --shadow-md:0 4px 16px rgba(0,0,0,.5);
+  --shadow-lg:0 12px 40px rgba(0,0,0,.6);
+}
+
+/* ═══════════════ RESET ═══════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:15px;scroll-behavior:smooth}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text);display:flex;height:100vh;overflow:hidden;transition:background var(--anim),color var(--anim)}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+input,select{font-family:inherit}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:99px}
+::-webkit-scrollbar-thumb:hover{background:var(--text-xs)}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+
+/* ═══════════════ SIDEBAR ═══════════════ */
+#sidebar{
+  width:var(--sidebar-w);min-width:var(--sidebar-w);height:100vh;
+  background:var(--surface);border-right:1px solid var(--border);
+  display:flex;flex-direction:column;z-index:200;overflow-y:auto;overflow-x:hidden;
+  transition:transform var(--anim);
+}
+.sidebar-logo{display:flex;align-items:center;gap:11px;padding:20px 18px 16px;border-bottom:1px solid var(--border)}
+.logo-icon{width:38px;height:38px;background:linear-gradient(135deg,#01696f,#019da5);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 2px 8px rgba(1,105,111,.25)}
+.logo-icon svg{color:#fff;width:20px;height:20px}
+.logo-text{line-height:1.25}
+.logo-text strong{font-size:.88rem;font-weight:700;display:block;letter-spacing:-.01em}
+.logo-text span{font-size:.68rem;color:var(--text-muted);font-weight:500}
+.sb-section{padding:16px 14px 10px}
+.sb-label{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text-xs);padding:0 4px;margin-bottom:8px}
+.tim-filter{display:flex;flex-direction:column;gap:3px}
+.tim-btn{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--radius-sm);color:var(--text);font-size:.82rem;font-weight:500;width:100%;text-align:left;transition:background var(--anim)}
+.tim-btn:hover{background:var(--surface-2)}
+.tim-btn.active{background:var(--surface-2);font-weight:600}
+.tim-btn .dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;transition:opacity var(--anim)}
+.tim-btn .count{margin-left:auto;font-size:.68rem;font-family:var(--font-mono);color:var(--text-xs);font-weight:600}
+.tim-btn.off .dot{opacity:.2}
+.tim-btn.off{opacity:.45}
+.month-select{
+  width:100%;padding:8px 30px 8px 10px;border-radius:var(--radius-sm);
+  border:1px solid var(--border);background:var(--surface);color:var(--text);
+  font-size:.82rem;cursor:pointer;appearance:none;outline:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b6860' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 10px center;transition:border-color var(--anim);
+}
+.month-select:focus{border-color:var(--primary)}
+.zoom-btns{display:flex;gap:3px;background:var(--surface-2);border-radius:var(--radius-sm);padding:3px}
+.zoom-btn{flex:1;padding:6px 0;border-radius:6px;color:var(--text-muted);font-size:.72rem;font-weight:600;transition:all var(--anim)}
+.zoom-btn.active{background:var(--primary);color:#fff;box-shadow:0 1px 4px rgba(1,105,111,.3)}
+.sb-stat{display:flex;justify-content:space-between;align-items:center;padding:3px 4px;font-size:.78rem;color:var(--text-muted)}
+.sb-stat span{font-family:var(--font-mono);font-size:.78rem;color:var(--text);font-weight:600}
+.sb-bottom{margin-top:auto;padding:14px 18px;border-top:1px solid var(--border);font-size:.66rem;color:var(--text-xs);line-height:1.7}
+
+/* ═══════════════ MAIN ═══════════════ */
+#main-wrap{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+
+/* TOPBAR */
+#topbar{
+  height:var(--topbar-h);background:var(--surface);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:10px;padding:0 20px;flex-shrink:0;z-index:100;
+}
+#hamburger{display:none;padding:6px;border-radius:var(--radius-sm);color:var(--text-muted)}
+#hamburger:hover{background:var(--surface-2)}
+.topbar-title{font-weight:700;font-size:.95rem;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.topbar-title span{color:var(--text-muted);font-weight:400;font-size:.82rem;margin-left:6px}
+.search-wrap{position:relative;width:220px;flex-shrink:0}
+.search-wrap svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text-xs);pointer-events:none;width:14px;height:14px}
+#search-input{
+  width:100%;padding:7px 10px 7px 32px;border-radius:var(--radius-sm);
+  border:1px solid var(--border);background:var(--bg);color:var(--text);
+  font-size:.82rem;transition:border-color var(--anim),box-shadow var(--anim);outline:none;
+}
+#search-input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(1,105,111,.1)}
+.view-toggle{display:flex;background:var(--surface-2);border-radius:var(--radius-sm);padding:3px;gap:2px}
+.view-btn{display:flex;align-items:center;gap:5px;padding:5px 12px;border-radius:6px;color:var(--text-muted);font-size:.76rem;font-weight:600;transition:all var(--anim)}
+.view-btn.active{background:var(--surface);color:var(--text);box-shadow:var(--shadow-sm)}
+.view-btn svg{width:14px;height:14px}
+#dark-toggle{padding:7px;border-radius:var(--radius-sm);color:var(--text-muted);transition:all var(--anim)}
+#dark-toggle:hover{background:var(--surface-2);color:var(--text)}
+
+/* ═══════════════ CONTENT SCROLL ═══════════════ */
+#content{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:18px}
+
+/* ═══════════════ KPI STRIP ═══════════════ */
+#kpi-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.kpi-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:18px 16px;display:flex;flex-direction:column;gap:4px;
+  box-shadow:var(--shadow-sm);position:relative;overflow:hidden;
+  transition:transform .2s ease,box-shadow .2s ease;
+}
+.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--radius) var(--radius) 0 0}
+.kpi-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
+.kpi-label{font-size:.68rem;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:.08em}
+.kpi-value{font-family:var(--font-mono);font-size:1.85rem;font-weight:700;line-height:1.1;letter-spacing:-.02em}
+.kpi-sub{font-size:.72rem;color:var(--text-muted);margin-top:2px}
+.kpi-icon{position:absolute;top:16px;right:16px;opacity:.08}
+.kpi-icon svg{width:44px;height:44px;stroke-width:1.2}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.kpi-card{animation:fadeUp .45s ease both}
+.kpi-card:nth-child(1){animation-delay:.04s}.kpi-card:nth-child(2){animation-delay:.08s}
+.kpi-card:nth-child(3){animation-delay:.12s}.kpi-card:nth-child(4){animation-delay:.16s}
+
+/* ═══════════════ SECTION CARD ═══════════════ */
+.sec-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow-sm);overflow:hidden}
+.sec-hdr{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--border);gap:10px}
+.sec-title{font-weight:700;font-size:.88rem;display:flex;align-items:center;gap:8px}
+.sec-title svg{width:16px;height:16px;color:var(--primary)}
+.sec-meta{font-size:.7rem;color:var(--text-xs)}
+
+/* ═══════════════ HEATMAP ═══════════════ */
+#heatmap-section{overflow:visible}
+#heatmap-wrap{padding:14px 16px 18px;overflow-x:auto}
+.hm-row{display:flex;align-items:center;gap:0;margin-bottom:2px}
+.hm-label-cell{width:90px;flex-shrink:0;font-size:.7rem;font-weight:600;color:var(--text-muted);text-align:right;padding-right:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hm-cells{display:flex;gap:1px;flex:1}
+.hm-cell{width:13px;height:20px;border-radius:2px;cursor:default;transition:transform .1s ease;flex-shrink:0}
+.hm-cell[data-count]:not([data-count="0"]){cursor:pointer}
+.hm-cell[data-count]:not([data-count="0"]):hover{transform:scale(1.3);z-index:2;position:relative}
+.hm-months{display:flex;gap:0;margin-left:90px;margin-bottom:4px}
+.hm-month-label{font-size:.62rem;color:var(--text-xs);font-weight:600;text-align:center;white-space:nowrap}
+.hm-legend{display:flex;align-items:center;gap:6px;font-size:.68rem;color:var(--text-xs);padding:10px 16px 14px;margin-left:90px}
+.legend-box{width:12px;height:12px;border-radius:2px}
+
+/* ═══════════════ GANTT CHART ═══════════════ */
+#gantt-wrap{overflow-x:auto;overflow-y:auto;max-height:60vh;position:relative}
+#gantt-container{min-width:900px}
+.g-header{display:flex;position:sticky;top:0;z-index:10;background:var(--surface);border-bottom:1px solid var(--border)}
+.g-label-col{flex:0 0 260px;min-width:260px;padding:0 14px;font-size:.7rem;font-weight:600;color:var(--text-muted);border-right:1px solid var(--border);display:flex;align-items:center;gap:6px;background:var(--surface)}
+.g-weeks-col{flex:1;display:flex}
+.g-month-cell{display:flex;flex-direction:column;border-right:1px solid var(--border)}
+.g-month-name{padding:5px 6px;text-align:center;border-bottom:1px solid var(--border);font-size:.68rem;font-weight:700;color:var(--text-muted);cursor:pointer;transition:color var(--anim);white-space:nowrap}
+.g-month-name:hover{color:var(--primary)}
+.g-week-row{display:flex}
+.g-week-cell{flex:1;text-align:center;padding:2px 0;font-size:.58rem;font-family:var(--font-mono);color:var(--text-xs);border-right:1px solid var(--border)}
+.g-week-cell:last-child{border-right:none}
+.g-week-cell.current{color:var(--primary);font-weight:700}
+
+.g-body{display:flex;flex-direction:column}
+.g-row{display:flex;align-items:stretch;border-bottom:1px solid var(--border);min-height:36px;cursor:pointer;transition:background .15s ease}
+.g-row:hover{background:var(--surface-2)}
+.g-row:nth-child(even){background:rgba(0,0,0,.01)}
+[data-theme="dark"] .g-row:nth-child(even){background:rgba(255,255,255,.01)}
+.g-row:nth-child(even):hover{background:var(--surface-2)}
+.g-row-label{
+  flex:0 0 260px;min-width:260px;padding:5px 12px;display:flex;flex-direction:column;justify-content:center;
+  border-right:1px solid var(--border);background:var(--surface);position:sticky;left:0;z-index:5;
+}
+.act-name{font-size:.78rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:230px}
+.act-prog{font-size:.66rem;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:230px}
+.tim-badge{display:inline-flex;font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:1px 6px;border-radius:99px;margin-top:2px;align-self:flex-start}
+.g-row-bars{flex:1;position:relative;display:flex;align-items:center}
+.act-bar{
+  position:absolute;height:18px;border-radius:5px;opacity:.85;z-index:6;
+  transition:opacity .12s ease,transform .12s ease;cursor:pointer;
+  box-shadow:0 1px 3px rgba(0,0,0,.1);
+}
+.act-bar:hover{opacity:1;transform:scaleY(1.25);z-index:7}
+.current-week-line{position:absolute;top:0;bottom:0;width:2px;background:var(--primary);z-index:4;opacity:.5}
+
+/* ═══════════════ CALENDAR ═══════════════ */
+#calendar-view{display:none}
+.cal-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding:16px}
+.cal-month{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.cal-month-hdr{font-size:.78rem;font-weight:700;padding:10px 12px;border-bottom:1px solid var(--border);background:var(--surface-2);display:flex;justify-content:space-between;align-items:center}
+.cal-month-count{font-family:var(--font-mono);font-size:.68rem;color:var(--text-xs);background:var(--surface);padding:2px 7px;border-radius:99px}
+.cal-chips{padding:10px;display:flex;flex-wrap:wrap;gap:4px;min-height:44px}
+.cal-chip{font-size:.64rem;font-weight:600;padding:3px 8px;border-radius:99px;white-space:nowrap;cursor:pointer;transition:transform .1s ease}
+.cal-chip:hover{transform:scale(1.05)}
+
+/* ═══════════════ DETAIL PANEL ═══════════════ */
+#detail-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:300;opacity:0;pointer-events:none;transition:opacity var(--anim);backdrop-filter:blur(2px)}
+#detail-backdrop.open{opacity:1;pointer-events:all}
+#detail-panel{
+  position:fixed;top:0;right:0;bottom:0;width:380px;background:var(--surface);
+  border-left:1px solid var(--border);z-index:400;display:flex;flex-direction:column;
+  transform:translateX(100%);transition:transform 300ms cubic-bezier(.16,1,.3,1);box-shadow:var(--shadow-lg);
+}
+#detail-panel.open{transform:translateX(0)}
+.detail-hdr{padding:20px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:12px}
+.detail-hdr-info{flex:1;min-width:0}
+.detail-hdr-info h2{font-size:1rem;font-weight:700;line-height:1.35}
+.detail-close{background:var(--surface-2);color:var(--text-muted);border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all var(--anim)}
+.detail-close:hover{color:var(--text);background:var(--border)}
+.detail-body{padding:20px;display:flex;flex-direction:column;gap:16px;overflow-y:auto;flex:1}
+.d-row{display:flex;flex-direction:column;gap:4px}
+.d-row-label{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-muted)}
+.d-row-val{font-size:.85rem;line-height:1.5}
+.d-weeks{display:flex;flex-wrap:wrap;gap:4px}
+.week-chip{font-size:.68rem;font-family:var(--font-mono);padding:3px 8px;border-radius:5px;background:var(--surface-2);color:var(--text-muted)}
+.overlap-box{background:rgba(218,113,1,.1);border:1px solid rgba(218,113,1,.25);border-radius:var(--radius-sm);padding:12px;font-size:.8rem;line-height:1.5}
+.overlap-box strong{display:block;margin-bottom:4px;color:#b45309}
+
+/* ═══════════════ TOOLTIP ═══════════════ */
+#tooltip{
+  position:fixed;background:var(--text);color:var(--bg);border-radius:var(--radius-sm);
+  padding:8px 12px;font-size:.74rem;line-height:1.5;pointer-events:none;z-index:1000;
+  max-width:280px;opacity:0;transform:translateY(4px);transition:opacity .1s ease,transform .1s ease;
+  box-shadow:var(--shadow-md);
+}
+#tooltip.vis{opacity:1;transform:translateY(0)}
+#tooltip strong{display:block;margin-bottom:3px}
+
+/* ═══════════════ EMPTY STATE ═══════════════ */
+.empty-st{padding:40px 20px;text-align:center;color:var(--text-muted);font-size:.85rem}
+.empty-st svg{margin:0 auto 10px;display:block;opacity:.25}
+
+/* ═══════════════ RESPONSIVE ═══════════════ */
+@media(max-width:1024px){
+  #sidebar{position:fixed;transform:translateX(-100%)}
+  #sidebar.open{transform:translateX(0);box-shadow:var(--shadow-lg)}
+  #hamburger{display:flex;align-items:center}
+  #kpi-strip{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:600px){
+  .g-label-col,.g-row-label{flex-basis:160px;min-width:160px}
+  .cal-grid{grid-template-columns:1fr 1fr}
+  #detail-panel{width:100%}
+  .search-wrap{width:130px}
+  .view-toggle{display:none}
+}
+  </style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="3" rx="1"/><rect x="3" y="10" width="12" height="3" rx="1"/><rect x="3" y="17" width="8" height="3" rx="1"/></svg>
+    </div>
+    <div class="logo-text">
+      <strong>Timeline Dashboard</strong>
+      <span>Activity Timeline 2026</span>
+    </div>
+  </div>
+
+  <div class="sb-section">
+    <div class="sb-label">Filter Tim</div>
+    <div class="tim-filter" id="tim-filter"></div>
+  </div>
+
+  <div class="sb-section">
+    <div class="sb-label">Bulan</div>
+    <select class="month-select" id="month-select">
+      <option value="all">Semua Bulan</option>
+      <option value="1">Januari</option><option value="2">Februari</option><option value="3">Maret</option>
+      <option value="4">April</option><option value="5">Mei</option><option value="6">Juni</option>
+      <option value="7">Juli</option><option value="8">Agustus</option><option value="9">September</option>
+      <option value="10">Oktober</option><option value="11">November</option><option value="12">Desember</option>
+    </select>
+  </div>
+
+  <div class="sb-section">
+    <div class="sb-label">Program / Kegiatan</div>
+    <select class="month-select" id="program-select">
+      <option value="all">Semua Program</option>
+    </select>
+  </div>
+
+  <div class="sb-section">
+    <div class="sb-label">Zoom</div>
+    <div class="zoom-btns">
+      <button class="zoom-btn active" data-zoom="yearly">Tahunan</button>
+      <button class="zoom-btn" data-zoom="quarterly">Triwulan</button>
+      <button class="zoom-btn" data-zoom="monthly">Bulanan</button>
+    </div>
+  </div>
+
+  <div class="sb-section">
+    <div class="sb-label">Ringkasan</div>
+    <div id="sidebar-stats"></div>
+  </div>
+
+  <div class="sb-bottom">
+    Data diperbarui: <span id="gen-at">—</span><br>
+    Your Organization &copy; 2026
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div id="main-wrap">
+  <header id="topbar">
+    <button id="hamburger" onclick="document.getElementById('sidebar').classList.toggle('open')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <h1 class="topbar-title">Dashboard Timeline Kegiatan <span>2026</span></h1>
+    <div class="search-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="search-input" placeholder="Cari kegiatan..." />
+    </div>
+    <div class="view-toggle">
+      <button class="view-btn active" data-view="gantt">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="18" height="3" rx="1"/><rect x="3" y="10" width="12" height="3" rx="1"/><rect x="3" y="17" width="8" height="3" rx="1"/></svg>
+        Gantt
+      </button>
+      <button class="view-btn" data-view="calendar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        Kalender
+      </button>
+    </div>
+    <button id="dark-toggle" onclick="toggleDark()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" id="dark-icon">
+        <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+        <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+      </svg>
+    </button>
+  </header>
+
+  <main id="content">
+    <!-- KPI Strip -->
+    <section id="kpi-strip">
+      <div class="kpi-card" style="--c:var(--primary)"><div class="kpi-card__inner">
+        <div class="kpi-label">Total Kegiatan</div>
+        <div class="kpi-value" id="kpi-total">0</div>
+        <div class="kpi-sub" id="kpi-total-sub">dari 5 tim kerja</div>
+        <div class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></div>
+      </div></div>
+      <div class="kpi-card"><div class="kpi-card__inner">
+        <div class="kpi-label">Bulan Tersibuk</div>
+        <div class="kpi-value" id="kpi-bulan" style="font-size:1.3rem">—</div>
+        <div class="kpi-sub" id="kpi-bulan-sub"></div>
+        <div class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+      </div></div>
+      <div class="kpi-card"><div class="kpi-card__inner">
+        <div class="kpi-label">Tim Terpadat</div>
+        <div class="kpi-value" id="kpi-tim" style="font-size:1.1rem">—</div>
+        <div class="kpi-sub" id="kpi-tim-sub"></div>
+        <div class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg></div>
+      </div></div>
+      <div class="kpi-card"><div class="kpi-card__inner">
+        <div class="kpi-label">Minggu Padat</div>
+        <div class="kpi-value" id="kpi-overlap">0</div>
+        <div class="kpi-sub">minggu dgn &ge;3 tim aktif</div>
+        <div class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+      </div></div>
+    </section>
+
+    <!-- Heatmap -->
+    <section class="sec-card" id="heatmap-section">
+      <div class="sec-hdr">
+        <div class="sec-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          Heat Map Beban Kerja
+        </div>
+        <div class="sec-meta">Hover untuk detail · Klik untuk buka</div>
+      </div>
+      <div id="heatmap-wrap"></div>
+    </section>
+
+    <!-- Gantt -->
+    <section class="sec-card" id="gantt-section">
+      <div class="sec-hdr">
+        <div class="sec-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="18" height="3" rx="1"/><rect x="3" y="10" width="12" height="3" rx="1"/><rect x="3" y="17" width="8" height="3" rx="1"/></svg>
+          Gantt Chart
+        </div>
+        <div class="sec-meta" id="gantt-count"></div>
+      </div>
+      <div id="gantt-wrap"><div id="gantt-container">
+        <div class="g-header" id="g-header"></div>
+        <div class="g-body" id="g-body"></div>
+      </div></div>
+    </section>
+
+    <!-- Calendar -->
+    <section class="sec-card" id="calendar-view">
+      <div class="sec-hdr">
+        <div class="sec-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Tampilan Kalender
+        </div>
+      </div>
+      <div class="cal-grid" id="cal-grid"></div>
+    </section>
+  </main>
+</div>
+
+<!-- Detail Panel -->
+<div id="detail-backdrop" onclick="closeDetail()"></div>
+<aside id="detail-panel">
+  <div class="detail-hdr">
+    <div class="detail-hdr-info">
+      <div id="detail-badge" class="tim-badge" style="margin-bottom:6px"></div>
+      <h2 id="detail-title">—</h2>
+    </div>
+    <button class="detail-close" onclick="closeDetail()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="detail-body" id="detail-body"></div>
+</aside>
+
+<div id="tooltip"></div>
+
+<!-- DATA -->
+<script src="data_embed.js"></script>
+<script>
+"use strict";
+
+// ═══════════════ CONSTANTS ═══════════════
+const MONTHS = [
+  {n:1,name:"Januari",abbr:"Jan",weeks:[1,2,3,4,5]},
+  {n:2,name:"Februari",abbr:"Feb",weeks:[6,7,8,9]},
+  {n:3,name:"Maret",abbr:"Mar",weeks:[10,11,12,13]},
+  {n:4,name:"April",abbr:"Apr",weeks:[14,15,16,17,18]},
+  {n:5,name:"Mei",abbr:"Mei",weeks:[19,20,21,22]},
+  {n:6,name:"Juni",abbr:"Jun",weeks:[23,24,25,26]},
+  {n:7,name:"Juli",abbr:"Jul",weeks:[27,28,29,30,31]},
+  {n:8,name:"Agustus",abbr:"Ags",weeks:[32,33,34,35]},
+  {n:9,name:"September",abbr:"Sep",weeks:[36,37,38,39]},
+  {n:10,name:"Oktober",abbr:"Okt",weeks:[40,41,42,43,44]},
+  {n:11,name:"November",abbr:"Nov",weeks:[45,46,47,48]},
+  {n:12,name:"Desember",abbr:"Des",weeks:[49,50,51,52,53]},
+];
+const W2M = {}; MONTHS.forEach(m => m.weeks.forEach(w => W2M[w] = m.n));
+const ALL_W = Array.from({length:53},(_,i)=>i+1);
+
+function nowWeek(){
+  const d=new Date();const u=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));
+  u.setUTCDate(u.getUTCDate()+4-(u.getUTCDay()||7));
+  return Math.ceil(((u-new Date(Date.UTC(u.getUTCFullYear(),0,1)))/864e5+1)/7);
+}
+const CUR_W = nowWeek();
+
+// ═══════════════ DATA REFS ═══════════════
+const DATA = (typeof TIMELINE_DATA !== 'undefined') ? TIMELINE_DATA : [];
+const META = (typeof TIM_META !== 'undefined') ? TIM_META : {};
+const GEN  = (typeof GENERATED_AT !== 'undefined') ? GENERATED_AT : '—';
+
+// Fix bulan_aktif using canonical mapping
+DATA.forEach(d => { d.bulan_aktif = [...new Set(d.minggu_aktif.map(w => W2M[w]||1))].sort((a,b)=>a-b); });
+
+// Pre-build lookup: team -> week -> [activity indices] for O(1) heatmap
+const TW_IDX = {}; // { tim: { week: [indices] } }
+DATA.forEach((d,i) => {
+  if (!TW_IDX[d.tim]) TW_IDX[d.tim] = {};
+  d.minggu_aktif.forEach(w => {
+    if (!TW_IDX[d.tim][w]) TW_IDX[d.tim][w] = [];
+    TW_IDX[d.tim][w].push(i);
+  });
+});
+
+// KPI card top-border colors from team colors
+const TEAM_COLORS = Object.values(META).map(m => m.color);
+document.querySelectorAll('.kpi-card').forEach((c,i) => {
+  c.style.setProperty('--c', TEAM_COLORS[i % TEAM_COLORS.length] || '#01696f');
+  c.querySelector('::before') // CSS handles via nth-child
+});
+// Apply KPI top border colors dynamically
+(function(){
+  const style = document.createElement('style');
+  const cards = TEAM_COLORS.slice(0,4);
+  cards.forEach((c,i) => { style.textContent += `.kpi-card:nth-child(${i+1})::before{background:${c}}\n`; });
+  document.head.appendChild(style);
+})();
+
+// ═══════════════ STATE ═══════════════
+const S = {
+  teams: Object.keys(META),
+  month: 'all',
+  program: 'all',
+  zoom:  'yearly',
+  view:  'gantt',
+  search:'',
+  theme: 'light',
+};
+
+// ═══════════════ HELPERS ═══════════════
+function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function rgba(hex,a){const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);return`rgba(${r},${g},${b},${a})`}
+
+function filtered(){
+  const q = S.search.toLowerCase();
+  const mo = S.month === 'all' ? 0 : parseInt(S.month);
+  const prog = S.program;
+  return DATA.filter(d => {
+    if (!S.teams.includes(d.tim)) return false;
+    if (mo && !d.bulan_aktif.includes(mo)) return false;
+    if (prog !== 'all' && d.program !== prog) return false;
+    if (q && !d.kegiatan.toLowerCase().includes(q) && !d.program.toLowerCase().includes(q)) return false;
+    return true;
+  }).sort((a,b) => {
+    // Sort by span duration (longest first), ties broken by earliest start week
+    const spanA = a.minggu_aktif.length;
+    const spanB = b.minggu_aktif.length;
+    if (spanB !== spanA) return spanB - spanA;
+    return (a.minggu_aktif[0]||0) - (b.minggu_aktif[0]||0);
+  });
+}
+
+function visWeeks(){
+  if (S.zoom==='monthly' && S.month!=='all'){
+    const m=MONTHS.find(m=>m.n===parseInt(S.month));
+    return m?m.weeks:ALL_W;
+  }
+  if (S.zoom==='quarterly'){
+    const mo=parseInt(S.month);
+    let q=[1,2,3];
+    if(!isNaN(mo)) q=mo<=3?[1,2,3]:mo<=6?[4,5,6]:mo<=9?[7,8,9]:[10,11,12];
+    const w=[];MONTHS.filter(m=>q.includes(m.n)).forEach(m=>w.push(...m.weeks));return w;
+  }
+  return ALL_W;
+}
+
+// Count-up
+function countUp(el,target,dur=700){
+  if(target===0){el.textContent='0';return}
+  const t0=performance.now();
+  (function step(now){
+    const p=Math.min((now-t0)/dur,1);
+    el.textContent=Math.round((1-Math.pow(1-p,3))*target);
+    if(p<1)requestAnimationFrame(step);
+  })(t0);
+}
+
+// Tooltip
+const TT=document.getElementById('tooltip');
+function showTT(html,e){TT.innerHTML=html;TT.classList.add('vis');moveTT(e)}
+function moveTT(e){
+  let x=e.clientX+14,y=e.clientY+14;
+  if(x+TT.offsetWidth>innerWidth-10)x=e.clientX-TT.offsetWidth-14;
+  if(y+TT.offsetHeight>innerHeight-10)y=e.clientY-TT.offsetHeight-14;
+  TT.style.left=x+'px';TT.style.top=y+'px';
+}
+function hideTT(){TT.classList.remove('vis')}
+
+// ═══════════════ KPI ═══════════════
+function renderKPI(){
+  const f=filtered();
+  countUp(document.getElementById('kpi-total'),f.length);
+  document.getElementById('kpi-total-sub').textContent=`dari ${Object.keys(META).length} tim kerja`;
+
+  // Busiest month
+  const mc={};f.forEach(d=>d.bulan_aktif.forEach(m=>{mc[m]=(mc[m]||0)+1}));
+  const bm=Object.entries(mc).sort((a,b)=>b[1]-a[1])[0];
+  if(bm){
+    const mo=MONTHS.find(m=>m.n===+bm[0]);
+    document.getElementById('kpi-bulan').textContent=mo?mo.name:'—';
+    document.getElementById('kpi-bulan-sub').textContent=bm[1]+' kegiatan aktif';
+  }
+
+  // Busiest team
+  const tc={};f.forEach(d=>{tc[d.tim]=(tc[d.tim]||0)+1});
+  const bt=Object.entries(tc).sort((a,b)=>b[1]-a[1])[0];
+  if(bt){
+    document.getElementById('kpi-tim').textContent=(META[bt[0]]||{label:bt[0]}).label.replace('Tim ','');
+    document.getElementById('kpi-tim-sub').textContent=bt[1]+' kegiatan';
+  }
+
+  // Overlap
+  const wt={};f.forEach(d=>d.minggu_aktif.forEach(w=>{if(!wt[w])wt[w]=new Set();wt[w].add(d.tim)}));
+  countUp(document.getElementById('kpi-overlap'),Object.values(wt).filter(s=>s.size>=3).length);
+}
+
+// ═══════════════ HEATMAP (O(1) lookup) ═══════════════
+function renderHeatmap(){
+  const wrap=document.getElementById('heatmap-wrap');
+  wrap.innerHTML='';
+
+  const teams=S.teams.filter(t=>DATA.some(d=>d.tim===t));
+  const f=new Set(filtered().map(d=>d.id)); // filtered IDs for fast check
+
+  // Pre-compute counts using index lookup
+  const counts={}; // { tim: { w: count } }
+  let maxC=1;
+  teams.forEach(tk=>{
+    counts[tk]={};
+    const twi=TW_IDX[tk]||{};
+    ALL_W.forEach(w=>{
+      const idxs=twi[w]||[];
+      const c=idxs.filter(i=>f.has(DATA[i].id)).length;
+      counts[tk][w]=c;
+      if(c>maxC)maxC=c;
+    });
+  });
+
+  // Month labels row
+  const mRow=document.createElement('div');
+  mRow.className='hm-months';
+  mRow.style.paddingLeft='0';
+  MONTHS.forEach(m=>{
+    const sp=document.createElement('div');
+    sp.className='hm-month-label';
+    sp.style.width=(m.weeks.length*14)+'px';
+    sp.style.flexShrink='0';
+    sp.textContent=m.abbr;
+    mRow.appendChild(sp);
+  });
+  wrap.appendChild(mRow);
+
+  // Team rows
+  teams.forEach(tk=>{
+    const meta=META[tk]||{label:tk,color:'#888'};
+    const row=document.createElement('div');
+    row.className='hm-row';
+
+    const lbl=document.createElement('div');
+    lbl.className='hm-label-cell';
+    lbl.textContent=meta.label.replace('Tim Statistik ','').replace('Tim ','');
+    lbl.title=meta.label;
+    row.appendChild(lbl);
+
+    const cells=document.createElement('div');
+    cells.className='hm-cells';
+
+    ALL_W.forEach(w=>{
+      const c=counts[tk][w];
+      const intensity=c/maxC;
+      const cell=document.createElement('div');
+      cell.className='hm-cell';
+      cell.dataset.count=c;
+
+      if(c===0){
+        cell.style.background='var(--surface-2)';
+      } else {
+        cell.style.background=rgba(meta.color,0.12+intensity*0.88);
+      }
+
+      if(w===CUR_W){
+        cell.style.outline='2px solid var(--primary)';
+        cell.style.outlineOffset='-1px';
+        cell.style.zIndex='1';
+        cell.style.position='relative';
+      }
+
+      if(c>0){
+        cell.addEventListener('mouseenter',e=>{
+          const twi=TW_IDX[tk]||{};
+          const idxs=(twi[w]||[]).filter(i=>f.has(DATA[i].id));
+          const mo=MONTHS.find(m=>m.n===W2M[w]);
+          showTT(`<strong>${esc(meta.label)} — W${w} (${mo?mo.abbr:''})</strong>`+
+            idxs.slice(0,8).map(i=>`&bull; ${esc(DATA[i].kegiatan)}`).join('<br>')+
+            (idxs.length>8?`<br><em>+${idxs.length-8} lainnya</em>`:''),e);
+        });
+        cell.addEventListener('mousemove',moveTT);
+        cell.addEventListener('mouseleave',hideTT);
+        cell.addEventListener('click',()=>{
+          const twi=TW_IDX[tk]||{};
+          const idxs=(twi[w]||[]).filter(i=>f.has(DATA[i].id));
+          if(idxs.length)openDetail(DATA[idxs[0]]);
+        });
+      }
+      cells.appendChild(cell);
+    });
+    row.appendChild(cells);
+    wrap.appendChild(row);
+  });
+
+  // Legend
+  const leg=document.createElement('div');
+  leg.className='hm-legend';
+  const c0=teams[0]?META[teams[0]].color:'#01696f';
+  [0,.25,.5,.75,1].forEach((v,i)=>{
+    if(i===0){const s=document.createElement('span');s.textContent='Sedikit';leg.appendChild(s)}
+    const b=document.createElement('div');
+    b.className='legend-box';
+    b.style.background=v===0?'var(--surface-2)':rgba(c0,0.12+v*0.88);
+    leg.appendChild(b);
+    if(i===4){const s=document.createElement('span');s.textContent='Banyak';leg.appendChild(s)}
+  });
+  wrap.appendChild(leg);
+}
+
+// ═══════════════ GANTT ═══════════════
+function renderGantt(){
+  const f=filtered();
+  const vw=visWeeks();
+  const hdr=document.getElementById('g-header');
+  const body=document.getElementById('g-body');
+  const cnt=document.getElementById('gantt-count');
+  hdr.innerHTML=''; body.innerHTML='';
+  cnt.textContent=f.length+' kegiatan ditampilkan';
+
+  if(!f.length){
+    body.innerHTML=`<div class="empty-st"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Tidak ada kegiatan yang cocok dengan filter.</div>`;
+    return;
+  }
+
+  // Group weeks by month
+  const vm=[];let cm=null;
+  vw.forEach(w=>{const m=W2M[w]||1;if(m!==cm){vm.push({m:MONTHS.find(mo=>mo.n===m),wks:[]});cm=m;}vm[vm.length-1].wks.push(w);});
+
+  // Header
+  const lc=document.createElement('div');lc.className='g-label-col';lc.textContent='Kegiatan / Program';
+  hdr.appendChild(lc);
+  const wc=document.createElement('div');wc.className='g-weeks-col';
+  vm.forEach(g=>{
+    const mc=document.createElement('div');mc.className='g-month-cell';mc.style.flex=g.wks.length;
+    const mn=document.createElement('div');mn.className='g-month-name';mn.textContent=g.m?g.m.name:'?';
+    mn.addEventListener('click',()=>{
+      if(!g.m)return;
+      document.getElementById('month-select').value=g.m.n;S.month=String(g.m.n);S.zoom='monthly';
+      document.querySelectorAll('.zoom-btn').forEach(b=>b.classList.toggle('active',b.dataset.zoom==='monthly'));
+      renderAll();
+    });
+    const wr=document.createElement('div');wr.className='g-week-row';
+    g.wks.forEach(w=>{
+      const wcel=document.createElement('div');wcel.className='g-week-cell'+(w===CUR_W?' current':'');
+      wcel.textContent='W'+w;wr.appendChild(wcel);
+    });
+    mc.appendChild(mn);mc.appendChild(wr);wc.appendChild(mc);
+  });
+  hdr.appendChild(wc);
+
+  // Rows
+  const frac=1/vw.length;
+  const cwIdx=vw.indexOf(CUR_W);
+
+  // Use DocumentFragment for performance
+  const frag=document.createDocumentFragment();
+  f.forEach(act=>{
+    const meta=META[act.tim]||{label:act.tim,color:'#888'};
+    const row=document.createElement('div');row.className='g-row';
+
+    const lbl=document.createElement('div');lbl.className='g-row-label';
+    lbl.innerHTML=`<div class="act-name" title="${esc(act.kegiatan)}">${esc(act.kegiatan)}</div>`+
+      `<div class="act-prog" title="${esc(act.program)}">${esc(act.program)}</div>`+
+      `<span class="tim-badge" style="background:${rgba(meta.color,.12)};color:${meta.color}">${meta.label.replace('Tim Statistik ','').replace('Tim ','')}</span>`;
+    row.appendChild(lbl);
+
+    const bars=document.createElement('div');bars.className='g-row-bars';
+
+    // Current week line
+    if(cwIdx>=0){
+      const cl=document.createElement('div');cl.className='current-week-line';
+      cl.style.left=`calc(${(cwIdx+.5)*frac*100}% - 1px)`;
+      bars.appendChild(cl);
+    }
+
+    // Activity bars — find contiguous segments
+    const aiv=act.minggu_aktif.filter(w=>vw.includes(w));
+    if(aiv.length){
+      const segs=[];let sg=[aiv[0]];
+      for(let i=1;i<aiv.length;i++){
+        if(aiv[i]<=aiv[i-1]+2)sg.push(aiv[i]);
+        else{segs.push(sg);sg=[aiv[i]];}
+      }
+      segs.push(sg);
+      segs.forEach(sg=>{
+        const i0=vw.indexOf(sg[0]),i1=vw.indexOf(sg[sg.length-1]);
+        if(i0<0)return;
+        const bar=document.createElement('div');bar.className='act-bar';
+        bar.style.left=`calc(${i0*frac*100}% + 2px)`;
+        bar.style.width=`calc(${(i1-i0+1)*frac*100}% - 4px)`;
+        bar.style.background=`linear-gradient(135deg,${meta.color},${rgba(meta.color,.8)})`;
+        bar.addEventListener('mouseenter',e=>showTT(`<strong>${esc(act.kegiatan)}</strong>${esc(meta.label)}<br>W${sg[0]}–W${sg[sg.length-1]} · ${esc(act.jadwal_teks)}`,e));
+        bar.addEventListener('mousemove',moveTT);
+        bar.addEventListener('mouseleave',hideTT);
+        bars.appendChild(bar);
+      });
+    }
+
+    row.appendChild(bars);
+    row.addEventListener('click',()=>openDetail(act));
+    frag.appendChild(row);
+  });
+  body.appendChild(frag);
+}
+
+// ═══════════════ CALENDAR ═══════════════
+function renderCalendar(){
+  const f=filtered();
+  const grid=document.getElementById('cal-grid');grid.innerHTML='';
+  const teamKeys=Object.keys(META);
+  MONTHS.forEach(mo=>{
+    const acts=f.filter(d=>d.bulan_aktif.includes(mo.n));
+    const col=document.createElement('div');col.className='cal-month';
+    col.innerHTML=`<div class="cal-month-hdr"><span>${mo.name}</span><span class="cal-month-count">${acts.length}</span></div>`;
+    const chips=document.createElement('div');chips.className='cal-chips';
+    if(!acts.length){
+      chips.innerHTML='<div style="font-size:.68rem;color:var(--text-xs);padding:4px">Tidak ada kegiatan</div>';
+    } else {
+      teamKeys.forEach(tk=>{
+        acts.filter(a=>a.tim===tk).forEach(act=>{
+          const m=META[tk]||{label:tk,color:'#888'};
+          const ch=document.createElement('span');ch.className='cal-chip';
+          ch.style.background=rgba(m.color,.12);ch.style.color=m.color;
+          ch.style.border=`1px solid ${rgba(m.color,.25)}`;
+          ch.textContent=act.kegiatan.substring(0,28);
+          ch.title=`${act.kegiatan} — ${act.program}`;
+          ch.addEventListener('click',()=>openDetail(act));
+          chips.appendChild(ch);
+        });
+      });
+    }
+    col.appendChild(chips);grid.appendChild(col);
+  });
+}
+
+// ═══════════════ DETAIL PANEL ═══════════════
+function openDetail(act){
+  const m=META[act.tim]||{label:act.tim,color:'#888'};
+  const badge=document.getElementById('detail-badge');
+  badge.textContent=m.label;badge.style.background=rgba(m.color,.12);badge.style.color=m.color;
+  document.getElementById('detail-title').textContent=act.kegiatan;
+
+  const body=document.getElementById('detail-body');body.innerHTML='';
+
+  const rows=[
+    ['Program Induk',act.program],
+    ['Jadwal',act.jadwal_teks],
+    ['Bulan Aktif',act.bulan_aktif.map(b=>MONTHS.find(m=>m.n===b)?.name||b).join(', ')],
+  ];
+  rows.forEach(([l,v])=>{
+    body.innerHTML+=`<div class="d-row"><div class="d-row-label">${l}</div><div class="d-row-val">${esc(v)}</div></div>`;
+  });
+
+  // Week chips
+  const wDiv=document.createElement('div');wDiv.className='d-row';
+  wDiv.innerHTML=`<div class="d-row-label">Minggu Aktif (${act.minggu_aktif.length})</div>`;
+  const wc=document.createElement('div');wc.className='d-weeks';
+  act.minggu_aktif.forEach(w=>{
+    const c=document.createElement('span');c.className='week-chip';
+    if(w===CUR_W){c.style.background=rgba(m.color,.2);c.style.color=m.color;c.style.fontWeight='700'}
+    c.textContent='W'+w;wc.appendChild(c);
+  });
+  wDiv.appendChild(wc);body.appendChild(wDiv);
+
+  // Overlaps
+  const otherTeams=new Set();
+  act.minggu_aktif.forEach(w=>
+    DATA.filter(d=>d.tim!==act.tim&&d.minggu_aktif.includes(w)).forEach(d=>otherTeams.add(d.tim))
+  );
+  if(otherTeams.size){
+    const ov=document.createElement('div');ov.className='overlap-box';
+    ov.innerHTML=`<strong>&#9888; Tumpang Tindih Jadwal</strong>Periode ini bersamaan dengan kegiatan dari: `+
+      [...otherTeams].map(t=>(META[t]||{label:t}).label).join(', ');
+    body.appendChild(ov);
+  }
+
+  document.getElementById('detail-panel').classList.add('open');
+  document.getElementById('detail-backdrop').classList.add('open');
+}
+
+function closeDetail(){
+  document.getElementById('detail-panel').classList.remove('open');
+  document.getElementById('detail-backdrop').classList.remove('open');
+}
+
+// ═══════════════ SIDEBAR FILTERS ═══════════════
+function renderFilters(){
+  const c=document.getElementById('tim-filter');c.innerHTML='';
+  const allOn=S.teams.length===Object.keys(META).length;
+
+  // All button
+  const ab=document.createElement('button');ab.className='tim-btn'+(allOn?' active':'');
+  ab.innerHTML=`<span class="dot" style="background:var(--text-muted)"></span><span>Semua Tim</span><span class="count">${DATA.length}</span>`;
+  ab.addEventListener('click',()=>{S.teams=[...Object.keys(META)];renderFilters();renderAll()});
+  c.appendChild(ab);
+
+  Object.entries(META).forEach(([k,m])=>{
+    const n=DATA.filter(d=>d.tim===k).length;
+    const on=S.teams.includes(k);
+    const b=document.createElement('button');b.className='tim-btn'+(on?' active':' off');
+    b.innerHTML=`<span class="dot" style="background:${m.color}"></span><span>${m.label}</span><span class="count">${n}</span>`;
+    b.addEventListener('click',()=>{
+      if(on&&S.teams.length>1)S.teams=S.teams.filter(t=>t!==k);
+      else if(!on)S.teams.push(k);
+      renderFilters();renderAll();
+    });
+    c.appendChild(b);
+  });
+
+  // Stats
+  const st=document.getElementById('sidebar-stats');st.innerHTML='';
+  const f=filtered();
+  [{l:'Ditampilkan',v:f.length},{l:'Minggu aktif',v:[...new Set(f.flatMap(d=>d.minggu_aktif))].length}].forEach(r=>{
+    st.innerHTML+=`<div class="sb-stat">${r.l} <span>${r.v}</span></div>`;
+  });
+}
+
+// ═══════════════ MASTER RENDER ═══════════════
+function renderAll(){renderKPI();renderHeatmap();S.view==='gantt'?renderGantt():renderCalendar()}
+
+// ═══════════════ DARK MODE ═══════════════
+function toggleDark(){
+  S.theme=S.theme==='light'?'dark':'light';
+  document.documentElement.dataset.theme=S.theme;
+  document.getElementById('dark-icon').innerHTML=S.theme==='dark'
+    ?'<path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>'
+    :'<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+  renderHeatmap();
+}
+
+// ═══════════════ EVENT LISTENERS ═══════════════
+document.getElementById('month-select').addEventListener('change',e=>{S.month=e.target.value;renderAll()});
+document.getElementById('program-select').addEventListener('change',e=>{S.program=e.target.value;renderFilters();renderAll()});
+document.querySelectorAll('.zoom-btn').forEach(b=>b.addEventListener('click',()=>{
+  S.zoom=b.dataset.zoom;document.querySelectorAll('.zoom-btn').forEach(x=>x.classList.toggle('active',x===b));
+  renderAll();
+}));
+document.querySelectorAll('.view-btn').forEach(b=>b.addEventListener('click',()=>{
+  S.view=b.dataset.view;
+  document.querySelectorAll('.view-btn').forEach(x=>x.classList.toggle('active',x===b));
+  document.getElementById('gantt-section').style.display=S.view==='gantt'?'':'none';
+  document.getElementById('calendar-view').style.display=S.view==='calendar'?'':'none';
+  S.view==='calendar'?renderCalendar():renderGantt();
+}));
+let _st;document.getElementById('search-input').addEventListener('input',e=>{
+  clearTimeout(_st);_st=setTimeout(()=>{S.search=e.target.value.trim();renderFilters();renderAll()},250);
+});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape')closeDetail();
+  if((e.key==='ArrowLeft'||e.key==='ArrowRight')&&S.month!=='all'){
+    const cur=parseInt(S.month);
+    const next=e.key==='ArrowRight'?Math.min(12,cur+1):Math.max(1,cur-1);
+    S.month=String(next);document.getElementById('month-select').value=S.month;renderAll();
+  }
+});
+
+// ═══════════════ INIT ═══════════════
+(function init(){
+  try{
+    document.getElementById('gen-at').textContent=GEN;
+    // Populate program dropdown
+    const progSet=new Set(DATA.map(d=>d.program).filter(Boolean));
+    const progSel=document.getElementById('program-select');
+    [...progSet].sort((a,b)=>a.localeCompare(b)).forEach(p=>{
+      const o=document.createElement('option');o.value=p;o.textContent=p.length>40?p.substring(0,38)+'…':p;o.title=p;
+      progSel.appendChild(o);
+    });
+    renderFilters();
+    renderAll();
+    console.log('Dashboard loaded:',DATA.length,'activities,',Object.keys(META).length,'teams');
+  }catch(err){
+    console.error('Dashboard init error:',err);
+    document.getElementById('content').innerHTML=`<div class="empty-st" style="padding:60px"><strong>Error loading dashboard</strong><br>${err.message}<br><br>Pastikan file data_embed.js ada di folder yang sama.</div>`;
+  }
+})();
+</script>
+</body>
+</html>
+
