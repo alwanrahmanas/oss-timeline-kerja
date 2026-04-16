@@ -31,8 +31,8 @@ A **static, interactive web dashboard** for visualizing annual work activity tim
 ### 1. Clone the repo
 
 ```bash
-git clone https://github.com/your-username/timeline-dashboard.git
-cd timeline-dashboard
+git clone https://github.com/alwanrahmanas/oss-timeline-kerja.git
+cd oss-timeline-kerja
 ```
 
 ### 2. Open the dashboard
