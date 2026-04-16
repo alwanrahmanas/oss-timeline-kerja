@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dashboard Timeline Kegiatan Timeline Dashboard 2026</title>
-  <meta name="description" content="Visualisasi interaktif jadwal tahunan seluruh tim kerja Timeline Dashboard 2026." />
+  <title>Dashboard Timeline Kegiatan BPS Kab. Buton Utara 2026</title>
+  <meta name="description" content="Visualisasi interaktif jadwal tahunan seluruh tim kerja BPS Kabupaten Buton Utara 2026." />
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,8 +12,8 @@
   <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,600,700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
   <!-- Favicon -->
-  <link rel="icon" type="image/png" href="favicon.png">
-  <link rel="shortcut icon" href="favicon.png">
+  <link rel="icon" type="image/png" href="logo-bps.png">
+  <link rel="shortcut icon" href="logo-bps.png">
 
 
   <style>
@@ -197,13 +197,31 @@ input,select{font-family:inherit}
 
 /* ═══════════════ CALENDAR ═══════════════ */
 #calendar-view{display:none}
-.cal-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding:16px}
-.cal-month{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
-.cal-month-hdr{font-size:.78rem;font-weight:700;padding:10px 12px;border-bottom:1px solid var(--border);background:var(--surface-2);display:flex;justify-content:space-between;align-items:center}
-.cal-month-count{font-family:var(--font-mono);font-size:.68rem;color:var(--text-xs);background:var(--surface);padding:2px 7px;border-radius:99px}
-.cal-chips{padding:10px;display:flex;flex-wrap:wrap;gap:4px;min-height:44px}
-.cal-chip{font-size:.64rem;font-weight:600;padding:3px 8px;border-radius:99px;white-space:nowrap;cursor:pointer;transition:transform .1s ease}
-.cal-chip:hover{transform:scale(1.05)}
+.cal-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;padding:16px}
+.cal-month{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:box-shadow .2s ease}
+.cal-month:hover{box-shadow:var(--shadow-md)}
+.cal-month-hdr{padding:12px 14px;border-bottom:1px solid var(--border);background:var(--surface-2)}
+.cal-month-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.cal-month-name{font-size:.82rem;font-weight:700}
+.cal-month-count{font-family:var(--font-mono);font-size:.68rem;color:var(--text-xs);background:var(--surface);padding:2px 8px;border-radius:99px;font-weight:600}
+.cal-team-bar{display:flex;height:4px;border-radius:2px;overflow:hidden;gap:1px}
+.cal-team-seg{height:100%;border-radius:1px;transition:flex .3s ease}
+.cal-week-row{display:flex;gap:2px;padding:8px 14px 4px;border-bottom:1px solid var(--border)}
+.cal-week-pill{flex:1;text-align:center;font-size:.56rem;font-family:var(--font-mono);color:var(--text-xs);padding:2px 0;border-radius:3px;background:var(--surface-2)}
+.cal-week-pill.active{background:var(--primary);color:#fff;font-weight:700}
+.cal-week-pill.current{outline:2px solid var(--primary);outline-offset:-1px}
+.cal-body{padding:6px 0;max-height:280px;overflow-y:auto}
+.cal-team-group{padding:2px 14px 6px}
+.cal-team-label{display:flex;align-items:center;gap:6px;padding:4px 0 3px;font-size:.64rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted)}
+.cal-team-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.cal-team-count{margin-left:auto;font-family:var(--font-mono);font-size:.6rem;color:var(--text-xs)}
+.cal-act{display:flex;align-items:center;gap:6px;padding:4px 8px;margin:2px 0;border-radius:var(--radius-sm);cursor:pointer;transition:background .15s ease;border-left:3px solid transparent}
+.cal-act:hover{background:var(--surface-2)}
+.cal-act-info{flex:1;min-width:0}
+.cal-act-name{font-size:.72rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cal-act-prog{font-size:.6rem;color:var(--text-xs);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cal-act-weeks{font-size:.58rem;font-family:var(--font-mono);color:var(--text-xs);white-space:nowrap;flex-shrink:0;background:var(--surface-2);padding:1px 5px;border-radius:3px}
+.cal-empty{padding:20px 14px;text-align:center;color:var(--text-xs);font-size:.72rem}
 
 /* ═══════════════ DETAIL PANEL ═══════════════ */
 #detail-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:300;opacity:0;pointer-events:none;transition:opacity var(--anim);backdrop-filter:blur(2px)}
@@ -244,9 +262,15 @@ input,select{font-family:inherit}
 
 /* ═══════════════ RESPONSIVE ═══════════════ */
 @media(max-width:1024px){
-  #sidebar{position:fixed;transform:translateX(-100%)}
+  body{display:block;height:auto;overflow:auto}
+  #sidebar{position:fixed;transform:translateX(-100%);height:100vh;z-index:500;max-width:85vw}
   #sidebar.open{transform:translateX(0);box-shadow:var(--shadow-lg)}
+  #sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:499;backdrop-filter:blur(2px)}
+  #sidebar-overlay.open{display:block}
   #hamburger{display:flex;align-items:center}
+  #main-wrap{overflow:visible}
+  #content{overflow:visible}
+  #gantt-wrap{max-height:none}
   #kpi-strip{grid-template-columns:repeat(2,1fr)}
 }
 @media(max-width:600px){
@@ -268,8 +292,8 @@ input,select{font-family:inherit}
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="3" rx="1"/><rect x="3" y="10" width="12" height="3" rx="1"/><rect x="3" y="17" width="8" height="3" rx="1"/></svg>
     </div>
     <div class="logo-text">
-      <strong>Timeline Dashboard</strong>
-      <span>Activity Timeline 2026</span>
+      <strong>BPS Buton Utara</strong>
+      <span>Timeline Kegiatan 2026</span>
     </div>
   </div>
 
@@ -312,14 +336,17 @@ input,select{font-family:inherit}
 
   <div class="sb-bottom">
     Data diperbarui: <span id="gen-at">—</span><br>
-    Your Organization &copy; 2026
+    BPS Kab. Buton Utara &copy; 2026
   </div>
 </aside>
+
+<!-- Sidebar overlay (mobile) -->
+<div id="sidebar-overlay" onclick="toggleSidebar()"></div>
 
 <!-- MAIN -->
 <div id="main-wrap">
   <header id="topbar">
-    <button id="hamburger" onclick="document.getElementById('sidebar').classList.toggle('open')">
+    <button id="hamburger" onclick="toggleSidebar()">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
     </button>
     <h1 class="topbar-title">Dashboard Timeline Kegiatan <span>2026</span></h1>
@@ -437,6 +464,12 @@ input,select{font-family:inherit}
 <script src="data_embed.js"></script>
 <script>
 "use strict";
+
+// ═══════════════ SIDEBAR TOGGLE (MOBILE) ═══════════════
+function toggleSidebar(){
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebar-overlay').classList.toggle('open');
+}
 
 // ═══════════════ CONSTANTS ═══════════════
 const MONTHS = [
@@ -803,28 +836,93 @@ function renderCalendar(){
   const f=filtered();
   const grid=document.getElementById('cal-grid');grid.innerHTML='';
   const teamKeys=Object.keys(META);
+
   MONTHS.forEach(mo=>{
     const acts=f.filter(d=>d.bulan_aktif.includes(mo.n));
     const col=document.createElement('div');col.className='cal-month';
-    col.innerHTML=`<div class="cal-month-hdr"><span>${mo.name}</span><span class="cal-month-count">${acts.length}</span></div>`;
-    const chips=document.createElement('div');chips.className='cal-chips';
+
+    // --- Header: month name + count + team distribution bar ---
+    const hdr=document.createElement('div');hdr.className='cal-month-hdr';
+    const topRow=document.createElement('div');topRow.className='cal-month-top';
+    topRow.innerHTML=`<span class="cal-month-name">${mo.name}</span><span class="cal-month-count">${acts.length}</span>`;
+    hdr.appendChild(topRow);
+
+    // Team distribution mini-bar
+    if(acts.length) {
+      const bar=document.createElement('div');bar.className='cal-team-bar';
+      const teamCounts={};
+      teamKeys.forEach(tk=>{teamCounts[tk]=acts.filter(a=>a.tim===tk).length});
+      teamKeys.forEach(tk=>{
+        if(!teamCounts[tk])return;
+        const seg=document.createElement('div');seg.className='cal-team-seg';
+        seg.style.flex=teamCounts[tk];
+        seg.style.background=(META[tk]||{color:'#888'}).color;
+        seg.title=`${(META[tk]||{label:tk}).label}: ${teamCounts[tk]}`;
+        bar.appendChild(seg);
+      });
+      hdr.appendChild(bar);
+    }
+    col.appendChild(hdr);
+
+    // --- Week indicator row ---
+    const weekRow=document.createElement('div');weekRow.className='cal-week-row';
+    mo.weeks.forEach(w=>{
+      const pill=document.createElement('div');pill.className='cal-week-pill';
+      // Mark weeks that have at least one activity
+      const hasAct=acts.some(a=>a.minggu_aktif.includes(w));
+      if(hasAct) pill.classList.add('active');
+      if(w===CUR_W) pill.classList.add('current');
+      pill.textContent='W'+w;
+      pill.title=`Minggu ${w}` + (hasAct ? ` — ${acts.filter(a=>a.minggu_aktif.includes(w)).length} kegiatan` : ' — tidak ada kegiatan');
+      weekRow.appendChild(pill);
+    });
+    col.appendChild(weekRow);
+
+    // --- Body: activities grouped by team ---
+    const body=document.createElement('div');body.className='cal-body';
+
     if(!acts.length){
-      chips.innerHTML='<div style="font-size:.68rem;color:var(--text-xs);padding:4px">Tidak ada kegiatan</div>';
+      body.innerHTML='<div class="cal-empty">Tidak ada kegiatan di bulan ini</div>';
     } else {
       teamKeys.forEach(tk=>{
-        acts.filter(a=>a.tim===tk).forEach(act=>{
-          const m=META[tk]||{label:tk,color:'#888'};
-          const ch=document.createElement('span');ch.className='cal-chip';
-          ch.style.background=rgba(m.color,.12);ch.style.color=m.color;
-          ch.style.border=`1px solid ${rgba(m.color,.25)}`;
-          ch.textContent=act.kegiatan.substring(0,28);
-          ch.title=`${act.kegiatan} — ${act.program}`;
-          ch.addEventListener('click',()=>openDetail(act));
-          chips.appendChild(ch);
+        const teamActs=acts.filter(a=>a.tim===tk);
+        if(!teamActs.length)return;
+        const meta=META[tk]||{label:tk,color:'#888'};
+
+        // Team header
+        const grp=document.createElement('div');grp.className='cal-team-group';
+        const lbl=document.createElement('div');lbl.className='cal-team-label';
+        lbl.innerHTML=`<span class="cal-team-dot" style="background:${meta.color}"></span>
+          ${esc(meta.label.replace('Tim Statistik ','').replace('Tim ',''))}
+          <span class="cal-team-count">${teamActs.length}</span>`;
+        grp.appendChild(lbl);
+
+        // Activities sorted by number of active weeks in this month (most first)
+        teamActs.sort((a,b)=>{
+          const aw=a.minggu_aktif.filter(w=>mo.weeks.includes(w)).length;
+          const bw=b.minggu_aktif.filter(w=>mo.weeks.includes(w)).length;
+          return bw-aw;
         });
+
+        teamActs.forEach(act=>{
+          const row=document.createElement('div');row.className='cal-act';
+          row.style.borderLeftColor=meta.color;
+          const activeInMonth=act.minggu_aktif.filter(w=>mo.weeks.includes(w));
+          const wMin=Math.min(...activeInMonth), wMax=Math.max(...activeInMonth);
+          row.innerHTML=`<div class="cal-act-info">
+              <div class="cal-act-name" title="${esc(act.kegiatan)}">${esc(act.kegiatan)}</div>
+              <div class="cal-act-prog" title="${esc(act.program)}">${esc(act.program)}</div>
+            </div>
+            <div class="cal-act-weeks">W${wMin}${wMax!==wMin?'–W'+wMax:''}</div>`;
+          row.addEventListener('click',()=>openDetail(act));
+          grp.appendChild(row);
+        });
+
+        body.appendChild(grp);
       });
     }
-    col.appendChild(chips);grid.appendChild(col);
+    col.appendChild(body);
+    grid.appendChild(col);
   });
 }
 
@@ -971,4 +1069,3 @@ document.addEventListener('keydown',e=>{
 </script>
 </body>
 </html>
-
